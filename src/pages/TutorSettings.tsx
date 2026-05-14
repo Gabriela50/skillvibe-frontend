@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { User, Mail, DollarSign, Briefcase, BookOpen, FileText, Save, CheckCircle, AlertCircle, Loader2, Plus, X } from 'lucide-react';
-import { tutorApi, TutorProfile } from '../services/api';
+import { User, Mail, DollarSign, Briefcase, BookOpen, FileText, Save, CheckCircle, Loader2, Plus, X } from 'lucide-react';
+import toast from 'react-hot-toast';
+import { tutorApi, type TutorProfile } from '../services/api';
 
 const TutorSettings = () => {
   const [profile, setProfile] = useState<TutorProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [message, setMessage] = useState({ type: '', text: '' });
   const [newSubject, setNewSubject] = useState('');
 
   useEffect(() => {
@@ -18,7 +18,7 @@ const TutorSettings = () => {
       const { data } = await tutorApi.getMyProfile();
       setProfile(data);
     } catch (err) {
-      setMessage({ type: 'error', text: 'Error al cargar el perfil.' });
+      toast.error('Error al cargar el perfil.');
     } finally {
       setLoading(false);
     }
@@ -29,7 +29,6 @@ const TutorSettings = () => {
     if (!profile) return;
 
     setSaving(true);
-    setMessage({ type: '', text: '' });
 
     try {
       await tutorApi.updateProfile({
@@ -40,10 +39,9 @@ const TutorSettings = () => {
         credentialsUrl: profile.credentialsUrl,
         profilePictureUrl: profile.profilePictureUrl
       });
-      setMessage({ type: 'success', text: 'Perfil actualizado correctamente.' });
-      setTimeout(() => setMessage({ type: '', text: '' }), 3000);
+      toast.success('Perfil actualizado correctamente.');
     } catch (err) {
-      setMessage({ type: 'error', text: 'Error al actualizar el perfil.' });
+      toast.error('Error al actualizar el perfil.');
     } finally {
       setSaving(false);
     }
@@ -177,19 +175,6 @@ const TutorSettings = () => {
               Guardar Cambios
             </button>
           </div>
-
-          {message.text && (
-            <div style={{ 
-              display: 'flex', alignItems: 'center', gap: '0.75rem', 
-              padding: '1rem', borderRadius: '12px',
-              background: message.type === 'success' ? 'rgba(16,185,129,0.1)' : 'rgba(248,113,113,0.1)',
-              color: message.type === 'success' ? '#10b981' : '#f87171',
-              border: `1px solid ${message.type === 'success' ? 'rgba(16,185,129,0.2)' : 'rgba(248,113,113,0.2)'}`
-            }}>
-              {message.type === 'success' ? <CheckCircle size={20} /> : <AlertCircle size={20} />}
-              {message.text}
-            </div>
-          )}
         </form>
 
         {/* Sidebar Info */}

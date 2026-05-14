@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { LogIn, AlertCircle } from 'lucide-react';
+import { LogIn } from 'lucide-react';
+import toast from 'react-hot-toast';
 import { useNavigate, Link } from 'react-router-dom';
 import { authApi } from '../services/api';
 import { useAuth } from '../context/AuthContext';
@@ -8,24 +9,22 @@ const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
   const navigate = useNavigate();
   const { login } = useAuth();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setError('');
-
     try {
       const { data } = await authApi.login({ email, password });
       login(data.token, data.user);
+      toast.success('¡Bienvenido de vuelta!');
       navigate('/dashboard');
     } catch (err: unknown) {
       const message =
         (err as { response?: { data?: { message?: string } } })?.response?.data?.message ??
         'Credenciales incorrectas. Verifica tu email y contraseña.';
-      setError(message);
+      toast.error(message);
     } finally {
       setLoading(false);
     }
@@ -39,17 +38,6 @@ const Login = () => {
           <h2>Bienvenido de vuelta</h2>
           <p style={{ color: 'var(--text-muted)' }}>Inicia sesión en tu cuenta de SkillVibes</p>
         </div>
-
-        {error && (
-          <div style={{
-            display: 'flex', gap: '0.75rem', alignItems: 'center',
-            background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.4)',
-            borderRadius: '8px', padding: '0.875rem 1rem', marginBottom: '1.5rem', color: '#f87171'
-          }}>
-            <AlertCircle size={18} />
-            <span>{error}</span>
-          </div>
-        )}
 
         <form onSubmit={handleLogin}>
           <div className="form-group">

@@ -1,13 +1,12 @@
 import { useState, useEffect, useCallback } from 'react';
-import { Search, Filter, X, SlidersHorizontal, ChevronLeft, ChevronRight, Sparkles } from 'lucide-react';
-import { tutorApi, TutorProfile, TutorSearchParams } from '../services/api';
+import { Search, Filter, SlidersHorizontal, ChevronLeft, ChevronRight } from 'lucide-react';
+import { tutorApi, type TutorProfile, type TutorSearchParams } from '../services/api';
 import TutorCard from '../components/TutorCard';
 import BookingModal from '../components/BookingModal';
 
 const BrowseTutors = () => {
   const [tutors, setTutors] = useState<TutorProfile[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   
@@ -32,9 +31,7 @@ const BrowseTutors = () => {
       const { data } = await tutorApi.search({ ...filters, page });
       setTutors(data.content);
       setTotalPages(data.totalPages);
-      setError('');
     } catch (err) {
-      setError('Error al cargar tutores. Inténtalo de nuevo más tarde.');
       console.error(err);
     } finally {
       setLoading(false);
@@ -97,7 +94,7 @@ const BrowseTutors = () => {
         </button>
 
         {/* Sidebar Filters */}
-        <div className={`glass-card ${showFilters ? 'show' : ''}`} style={{ 
+        <div className={`glass-card filters-sidebar ${showFilters ? 'show' : ''}`} style={{ 
           flex: '0 0 300px', 
           padding: '2rem', 
           height: 'fit-content',
@@ -253,8 +250,8 @@ const BrowseTutors = () => {
         }
         @media (max-width: 768px) {
           #mobile-filter-btn { display: flex !important; }
-          .glass-card { flex: 1 1 100% !important; position: static !important; }
-          .glass-card:not(.show) { display: none; }
+          .filters-sidebar { flex: 1 1 100% !important; position: static !important; }
+          .filters-sidebar:not(.show) { display: none; }
         }
       `}</style>
 

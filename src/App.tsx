@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route, Link, useNavigate, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Link, useNavigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import Home from './pages/Home';
 import Login from './pages/Login';
@@ -7,6 +7,8 @@ import Dashboard from './pages/Dashboard';
 import BrowseTutors from './pages/BrowseTutors';
 import VirtualClassroom from './pages/VirtualClassroom';
 import TutorSettings from './pages/TutorSettings';
+import AddBalance from './pages/AddBalance';
+import { Toaster } from 'react-hot-toast';
 import './App.css';
 
 function NavBar() {
@@ -29,6 +31,13 @@ function NavBar() {
         {isAuthenticated ? (
           <>
             <Link to="/dashboard" className="nav-link">Mis Tutorías</Link>
+            {user?.role === 'ROLE_STUDENT' && (
+              <Link to="/wallet" className="nav-link" style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: 'var(--accent-primary)', fontWeight: 600 }}>
+                <span style={{ background: 'rgba(168,85,247,0.1)', padding: '0.2rem 0.6rem', borderRadius: '50px' }}>
+                  ${user?.balance?.toFixed(2)}
+                </span>
+              </Link>
+            )}
             {user?.role === 'ROLE_TUTOR' && (
               <Link to="/tutor/settings" className="nav-link">Configuración de Perfil</Link>
             )}
@@ -59,6 +68,7 @@ function NavBar() {
 function App() {
   return (
     <AuthProvider>
+      <Toaster position="top-center" reverseOrder={false} />
       <Router>
         <div className="app-container">
           <NavBar />
@@ -71,6 +81,7 @@ function App() {
               <Route path="/browse" element={<BrowseTutors />} />
               <Route path="/classroom/:id" element={<VirtualClassroom />} />
               <Route path="/tutor/settings" element={<TutorSettings />} />
+              <Route path="/wallet" element={<AddBalance />} />
             </Routes>
           </main>
         </div>

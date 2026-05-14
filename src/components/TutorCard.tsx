@@ -1,14 +1,13 @@
 import React from 'react';
-import { Star, Clock, BookOpen, ChevronRight, CheckCircle } from 'lucide-react';
-import { TutorProfile } from '../services/api';
+import { Star, Clock, ChevronRight, CheckCircle } from 'lucide-react';
+import { type TutorProfile } from '../services/api';
 
 interface TutorCardProps {
   tutor: TutorProfile;
-  onClick?: () => void;
   onBook?: (tutor: TutorProfile) => void;
 }
 
-const TutorCard: React.FC<TutorCardProps> = ({ tutor, onClick, onBook }) => {
+const TutorCard: React.FC<TutorCardProps> = ({ tutor, onBook }) => {
   return (
     <div className="glass-card item-card animate-scale-in" style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
       <div style={{ position: 'relative', marginBottom: '1rem' }}>

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Calendar, Clock, DollarSign, X, CheckCircle2, AlertCircle, Loader2 } from 'lucide-react';
-import { tutoriasApi, TutorProfile } from '../services/api';
+import { Calendar, Clock, DollarSign, X, CheckCircle2, Loader2 } from 'lucide-react';
+import toast from 'react-hot-toast';
+import { tutoriasApi, type TutorProfile } from '../services/api';
 
 interface BookingModalProps {
   tutor: TutorProfile;
@@ -16,13 +17,11 @@ const BookingModal: React.FC<BookingModalProps> = ({ tutor, onClose, onSuccess }
     materia: tutor.subjects[0] || ''
   });
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setError('');
 
     try {
       const fechaHora = `${formData.date}T${formData.time}:00`;
@@ -33,12 +32,13 @@ const BookingModal: React.FC<BookingModalProps> = ({ tutor, onClose, onSuccess }
         fechaHora
       });
       setSuccess(true);
+      toast.success('¡Reserva realizada!');
       setTimeout(() => {
         onSuccess();
         onClose();
       }, 2000);
     } catch (err: any) {
-      setError(err.response?.data?.message || 'No se pudo realizar la reserva. Verifica tu saldo.');
+      toast.error(err.response?.data?.message || 'No se pudo realizar la reserva. Verifica tu saldo.');
     } finally {
       setLoading(false);
     }
@@ -149,16 +149,6 @@ const BookingModal: React.FC<BookingModalProps> = ({ tutor, onClose, onSuccess }
                   ${tutor.hourlyRate.toFixed(2)}
                 </span>
               </div>
-
-              {error && (
-                <div style={{ 
-                  display: 'flex', alignItems: 'center', gap: '0.5rem', 
-                  color: '#f87171', background: 'rgba(248,113,113,0.1)', 
-                  padding: '0.75rem', borderRadius: '8px', fontSize: '0.9rem' 
-                }}>
-                  <AlertCircle size={18} /> {error}
-                </div>
-              )}
 
               <button 
                 type="submit" 

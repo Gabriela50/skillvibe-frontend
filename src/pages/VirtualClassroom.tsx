@@ -1,7 +1,7 @@
-import React, { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ChevronLeft, Send, Sparkles, User, Video, Mic, ScreenShare, Settings, Layout } from 'lucide-react';
-import { ReactSketchCanvas, CanvasPath } from 'react-sketch-canvas';
+import { ReactSketchCanvas, type CanvasPath } from 'react-sketch-canvas';
 import { Client } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 import axios from 'axios';
@@ -103,10 +103,10 @@ const VirtualClassroom = () => {
   };
 
   return (
-    <div className="classroom-layout" style={{ height: 'calc(100vh - 70px)', display: 'grid', gridTemplateColumns: '1fr 350px', gap: '1rem', padding: '1rem', background: '#0f172a' }}>
+    <div className="classroom-layout">
       
       {/* Main Area: Video + Board */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', overflow: 'hidden' }}>
+      <div className="classroom-main" style={{ display: 'flex', flexDirection: 'column', gap: '1rem', overflow: 'hidden' }}>
         
         {/* Header Controls */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(30,41,59,0.5)', padding: '0.75rem 1.5rem', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)' }}>
@@ -141,26 +141,26 @@ const VirtualClassroom = () => {
         </div>
 
         {/* Video Strip (Mock) */}
-        <div style={{ display: 'flex', gap: '1rem', height: '120px' }}>
-          <div style={{ flex: 1, background: '#1e293b', borderRadius: '12px', position: 'relative', overflow: 'hidden' }}>
+        <div style={{ display: 'flex', gap: '1rem', height: '120px', flexWrap: 'wrap' }}>
+          <div style={{ flex: '1 1 150px', background: '#1e293b', borderRadius: '12px', position: 'relative', overflow: 'hidden', height: '100px' }}>
             <div style={{ position: 'absolute', bottom: '0.5rem', left: '0.5rem', background: 'rgba(0,0,0,0.5)', padding: '0.2rem 0.5rem', borderRadius: '4px', fontSize: '0.7rem' }}>Tú (Estudiante)</div>
             <div style={{ width: '100%', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}><User size={40} color="#64748b" /></div>
           </div>
-          <div style={{ flex: 1, background: '#1e293b', borderRadius: '12px', position: 'relative', overflow: 'hidden' }}>
+          <div style={{ flex: '1 1 150px', background: '#1e293b', borderRadius: '12px', position: 'relative', overflow: 'hidden', height: '100px' }}>
              <div style={{ position: 'absolute', bottom: '0.5rem', left: '0.5rem', background: 'rgba(0,0,0,0.5)', padding: '0.2rem 0.5rem', borderRadius: '4px', fontSize: '0.7rem' }}>Profesor</div>
              <div style={{ width: '100%', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}><Video size={40} color="#64748b" /></div>
           </div>
-          <div style={{ width: '200px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem' }}>
-            <button style={{ background: '#334155', border: 'none', borderRadius: '8px', color: 'white' }}><Mic size={20} /></button>
-            <button style={{ background: '#334155', border: 'none', borderRadius: '8px', color: 'white' }}><Video size={20} /></button>
-            <button style={{ background: '#334155', border: 'none', borderRadius: '8px', color: 'white' }}><ScreenShare size={20} /></button>
-            <button style={{ background: '#334155', border: 'none', borderRadius: '8px', color: 'white' }}><Settings size={20} /></button>
+          <div style={{ flex: '1 1 200px', display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '0.5rem', height: '50px' }}>
+            <button style={{ background: '#334155', border: 'none', borderRadius: '8px', color: 'white', display: 'flex', justifyContent: 'center', alignItems: 'center' }}><Mic size={18} /></button>
+            <button style={{ background: '#334155', border: 'none', borderRadius: '8px', color: 'white', display: 'flex', justifyContent: 'center', alignItems: 'center' }}><Video size={18} /></button>
+            <button style={{ background: '#334155', border: 'none', borderRadius: '8px', color: 'white', display: 'flex', justifyContent: 'center', alignItems: 'center' }}><ScreenShare size={18} /></button>
+            <button style={{ background: '#334155', border: 'none', borderRadius: '8px', color: 'white', display: 'flex', justifyContent: 'center', alignItems: 'center' }}><Settings size={18} /></button>
           </div>
         </div>
       </div>
 
       {/* Right Sidebar: AI Feedback & Chat */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+      <div className="classroom-sidebar" style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
         <div style={{ flex: 1, background: 'rgba(30,41,59,0.5)', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.1)', padding: '1.5rem', display: 'flex', flexDirection: 'column' }}>
           <h3 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1.5rem', fontSize: '1.1rem' }}>
             <Sparkles size={20} color="#a855f7" /> Retroalimentación IA

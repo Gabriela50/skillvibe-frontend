@@ -148,6 +148,7 @@ export interface TutorProfile {
   yearsOfExperience: number;
   subjects: string[];
   isVerified: boolean;
+  credentialsUrl?: string;
 }
 
 export interface PageResponse<T> {
@@ -179,6 +180,14 @@ export const tutorApi = {
 
   updateProfile: (data: Partial<TutorProfile>) =>
     api.put<TutorProfile>('/tutor/profile', data),
+};
+
+export const pagoApi = {
+  createCheckout: (amount: number) =>
+    api.post<string>('/pagos/checkout', { amount }),
+
+  getHistorial: () =>
+    api.get<any[]>('/pagos/historial'),
 };
 
 export default api;

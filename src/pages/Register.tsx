@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { UserPlus, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { UserPlus } from 'lucide-react';
+import toast from 'react-hot-toast';
 import { useNavigate, Link } from 'react-router-dom';
 import { authApi } from '../services/api';
 import { useAuth } from '../context/AuthContext';
@@ -20,16 +21,12 @@ const Register = () => {
   const [subjects, setSubjects] = useState('');
 
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [successMsg, setSuccessMsg] = useState('');
   const navigate = useNavigate();
   const { login } = useAuth();
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setError('');
-    setSuccessMsg('');
 
     try {
       if (role === 'TUTOR') {
@@ -43,7 +40,7 @@ const Register = () => {
           subjects: subjectList
         });
         
-        setSuccessMsg('¡Registro exitoso! Tu perfil como tutor está pendiente de verificación. Serás redirigido al login en breve.');
+        toast.success('¡Registro exitoso! Tu perfil como tutor está pendiente de verificación.', { duration: 6000 });
         setTimeout(() => navigate('/login'), 4000);
       } else {
         // 1. Register user
@@ -51,13 +48,14 @@ const Register = () => {
         // 2. Auto-login after registration
         const { data } = await authApi.login({ email, password });
         login(data.token, data.user);
+        toast.success('¡Cuenta creada con éxito!');
         navigate('/dashboard');
       }
     } catch (err: unknown) {
       const message =
         (err as { response?: { data?: { message?: string } } })?.response?.data?.message ??
         'Error al registrar. Revisa los datos o puede que el email ya esté en uso.';
-      setError(message);
+      toast.error(message);
     } finally {
       setLoading(false);
     }
@@ -72,29 +70,7 @@ const Register = () => {
           <p style={{ color: 'var(--text-muted)' }}>Únete a la comunidad SkillVibes</p>
         </div>
 
-        {error && (
-          <div style={{
-            display: 'flex', gap: '0.75rem', alignItems: 'center',
-            background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.4)',
-            borderRadius: '8px', padding: '0.875rem 1rem', marginBottom: '1.5rem', color: '#f87171'
-          }}>
-            <AlertCircle size={18} />
-            <span>{error}</span>
-          </div>
-        )}
-
-        {successMsg && (
-          <div style={{
-            display: 'flex', gap: '0.75rem', alignItems: 'center',
-            background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.4)',
-            borderRadius: '8px', padding: '0.875rem 1rem', marginBottom: '1.5rem', color: '#10b981'
-          }}>
-            <CheckCircle2 size={18} />
-            <span>{successMsg}</span>
-          </div>
-        )}
-
-        <form onSubmit={handleRegister} style={successMsg ? { opacity: 0.5, pointerEvents: 'none' } : {}}>
+        <form onSubmit={handleRegister}>
           <div className="form-group">
             <label className="form-label">¿Cómo participarás?</label>
             <div style={{ display: 'flex', gap: '1rem' }}>
@@ -228,11 +204,11 @@ const Register = () => {
             </div>
           )}
 
-          <button
+            <button
             type="submit"
             className="btn btn-primary"
             style={{ width: '100%', marginTop: '0.5rem' }}
-            disabled={loading || !!successMsg}
+            disabled={loading}
           >
             {loading ? 'Procesando...' : 'Registrarme'}
           </button>
