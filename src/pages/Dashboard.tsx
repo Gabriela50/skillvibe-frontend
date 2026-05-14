@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Search, Calendar, Clock, User, Filter, LogOut, BookOpen, DollarSign } from 'lucide-react';
+import { Search, Calendar, Clock, User, Filter, LogOut, BookOpen, DollarSign, Star, Code, Globe, PenTool, Sparkles, TrendingUp, ChevronRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { tutoriasApi, type Tutoria } from '../services/api';
 import { useAuth } from '../context/AuthContext';
@@ -189,24 +189,112 @@ const Dashboard = () => {
                     </button>
                   )}
                   {tutoria.meetingLink && (
-                    <a
-                      href={tutoria.meetingLink}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="btn btn-primary"
-                      style={{ padding: '0.5rem 1rem', fontSize: '0.85rem', textDecoration: 'none' }}
+                    <button 
+                      onClick={() => navigate(`/classroom/${tutoria.id}`)}
+                      className="btn btn-primary" 
+                      style={{ padding: '0.4rem 1rem', fontSize: '0.85rem' }}
                     >
                       Unirse
-                    </a>
+                    </button>
                   )}
                 </div>
               </div>
             ))}
 
-            {filtered.length === 0 && (
-              <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '4rem', color: 'var(--text-muted)' }}>
-                <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>📚</div>
-                No tienes tutorías aún. ¡Es hora de empezar!
+            {filtered.length === 0 && user?.role === 'STUDENT' && (
+              <div style={{ gridColumn: '1 / -1', display: 'flex', flexDirection: 'column', gap: '2rem', animation: 'fadeIn 0.5s ease-out' }}>
+                
+                {/* Hero Banner */}
+                <div style={{
+                  background: 'linear-gradient(135deg, rgba(168,85,247,0.15) 0%, rgba(236,72,153,0.15) 100%)',
+                  border: '1px solid rgba(168,85,247,0.3)',
+                  borderRadius: '16px', padding: '3rem 2rem', textAlign: 'center', position: 'relative', overflow: 'hidden'
+                }}>
+                  <div style={{ position: 'absolute', top: '-10%', left: '-5%', width: '150px', height: '150px', background: '#a855f7', filter: 'blur(80px)', opacity: 0.3, borderRadius: '50%' }}></div>
+                  <div style={{ position: 'absolute', bottom: '-10%', right: '-5%', width: '150px', height: '150px', background: '#ec4899', filter: 'blur(80px)', opacity: 0.3, borderRadius: '50%' }}></div>
+                  
+                  <Sparkles size={48} color="#ec4899" style={{ margin: '0 auto 1rem auto' }} />
+                  <h2 style={{ fontSize: '2.5rem', marginBottom: '1rem', background: 'linear-gradient(to right, #e879f9, #ec4899)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+                    Desata tu máximo potencial
+                  </h2>
+                  <p style={{ color: 'var(--text-muted)', fontSize: '1.1rem', maxWidth: '600px', margin: '0 auto 2rem auto' }}>
+                    Aún no tienes tutorías programadas. Conecta con expertos de todo el mundo y lleva tus habilidades al siguiente nivel.
+                  </p>
+                  <button 
+                    className="btn btn-primary" 
+                    onClick={() => navigate('/browse')}
+                    style={{ padding: '0.8rem 2rem', fontSize: '1.1rem', display: 'inline-flex', gap: '0.5rem', alignItems: 'center', borderRadius: '9999px', boxShadow: '0 4px 14px 0 rgba(168, 85, 247, 0.39)' }}
+                  >
+                    Explorar Tutores <ChevronRight size={18} />
+                  </button>
+                </div>
+
+                {/* Materias Populares */}
+                <div>
+                  <h3 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1.5rem' }}>
+                    <TrendingUp size={24} color="#a855f7" /> Materias Populares
+                  </h3>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
+                    {[
+                      { name: 'Programación', icon: <Code size={24} color="#3b82f6" />, color: '#3b82f6' },
+                      { name: 'Matemáticas', icon: <TrendingUp size={24} color="#10b981" />, color: '#10b981' },
+                      { name: 'Idiomas', icon: <Globe size={24} color="#f59e0b" />, color: '#f59e0b' },
+                      { name: 'Diseño UX/UI', icon: <PenTool size={24} color="#ec4899" />, color: '#ec4899' },
+                    ].map((materia) => (
+                      <div key={materia.name} className="glass-card" style={{
+                        padding: '1.5rem', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem', cursor: 'pointer',
+                        transition: 'all 0.3s ease', border: '1px solid rgba(255,255,255,0.05)'
+                      }}
+                      onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-5px)'}
+                      onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}>
+                        <div style={{ padding: '1rem', borderRadius: '12px', background: `${materia.color}15` }}>
+                          {materia.icon}
+                        </div>
+                        <span style={{ fontWeight: 600 }}>{materia.name}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Tutores Destacados Mockup */}
+                <div>
+                  <h3 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1.5rem' }}>
+                    <Star size={24} color="#eab308" /> Tutores Destacados
+                  </h3>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem' }}>
+                    {[
+                      { name: 'Dra. Elena Gómez', subject: 'Física Cuántica', rate: 25.00, rating: 4.9, img: 'https://i.pravatar.cc/150?img=32' },
+                      { name: 'Carlos Ruíz', subject: 'Desarrollo Frontend', rate: 18.50, rating: 4.8, img: 'https://i.pravatar.cc/150?img=11' },
+                      { name: 'Sarah Miller', subject: 'Inglés Avanzado', rate: 20.00, rating: 5.0, img: 'https://i.pravatar.cc/150?img=5' },
+                    ].map((tutor) => (
+                      <div key={tutor.name} className="glass-card item-card" style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                        <img src={tutor.img} alt={tutor.name} style={{ width: '64px', height: '64px', borderRadius: '50%', objectFit: 'cover', border: '2px solid #a855f7' }} />
+                        <div style={{ flex: 1 }}>
+                          <h4 style={{ margin: '0 0 0.2rem 0' }}>{tutor.name}</h4>
+                          <span className="item-badge" style={{ fontSize: '0.75rem', marginBottom: '0.5rem', display: 'inline-block' }}>{tutor.subject}</span>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '0.2rem' }}>
+                            <span style={{ color: '#eab308', display: 'flex', alignItems: 'center', gap: '0.2rem', fontSize: '0.9rem', fontWeight: 600 }}>
+                              <Star size={14} fill="#eab308" /> {tutor.rating}
+                            </span>
+                            <span style={{ color: '#10b981', fontWeight: 700 }}>${tutor.rate.toFixed(2)}/h</span>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+              </div>
+            )}
+
+            {filtered.length === 0 && user?.role === 'TUTOR' && (
+              <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '5rem 2rem', background: 'rgba(168,85,247,0.05)', borderRadius: '16px', border: '1px dashed rgba(168,85,247,0.3)' }}>
+                <BookOpen size={64} color="#a855f7" style={{ margin: '0 auto 1.5rem auto', opacity: 0.8 }} />
+                <h2 style={{ fontSize: '2rem', marginBottom: '1rem' }}>Tu agenda está libre</h2>
+                <p style={{ color: 'var(--text-muted)', fontSize: '1.1rem', maxWidth: '500px', margin: '0 auto 2rem auto' }}>
+                  Aún no tienes tutorías programadas con estudiantes. Optimiza tu perfil y prepárate para compartir tus conocimientos.
+                </p>
+                <button className="btn btn-primary" style={{ padding: '0.75rem 1.5rem' }}>Completar mi perfil</button>
               </div>
             )}
           </div>

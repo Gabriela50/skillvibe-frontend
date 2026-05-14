@@ -1,9 +1,12 @@
-import { BrowserRouter as Router, Routes, Route, Link, useNavigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Link, useNavigate, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
+import BrowseTutors from './pages/BrowseTutors';
+import VirtualClassroom from './pages/VirtualClassroom';
+import TutorSettings from './pages/TutorSettings';
 import './App.css';
 
 function NavBar() {
@@ -26,6 +29,9 @@ function NavBar() {
         {isAuthenticated ? (
           <>
             <Link to="/dashboard" className="nav-link">Mis Tutorías</Link>
+            {user?.role === 'ROLE_TUTOR' && (
+              <Link to="/tutor/settings" className="nav-link">Configuración de Perfil</Link>
+            )}
             <span style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>
               {user?.fullName}
             </span>
@@ -62,6 +68,9 @@ function App() {
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
               <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/browse" element={<BrowseTutors />} />
+              <Route path="/classroom/:id" element={<VirtualClassroom />} />
+              <Route path="/tutor/settings" element={<TutorSettings />} />
             </Routes>
           </main>
         </div>
