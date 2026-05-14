@@ -1,11 +1,12 @@
 import { createContext, useContext, useState, type ReactNode } from 'react';
-import type { UserResponseDTO } from '../services/api';
+import { type UserResponseDTO, authApi } from '../services/api';
 
 interface AuthContextType {
   user: UserResponseDTO | null;
   token: string | null;
   login: (token: string, user: UserResponseDTO) => void;
   logout: () => void;
+  fetchUserData: () => Promise<void>;
   isAuthenticated: boolean;
 }
 
@@ -34,8 +35,19 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setUser(null);
   };
 
+  const fetchUserData = async () => {
+    if (!user?.id) return;
+    try {
+      const { data } = await authApi.getUser(user.id);
+      setUser(data);
+      localStorage.setItem('skillvibes_user', JSON.stringify(data));
+    } catch (err) {
+      console.error("Failed to fetch user data", err);
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ user, token, login, logout, isAuthenticated: !!token }}>
+    <AuthContext.Provider value={{ user, token, login, logout, fetchUserData, isAuthenticated: !!token }}>
       {children}
     </AuthContext.Provider>
   );

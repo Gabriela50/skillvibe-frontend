@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { CreditCard, DollarSign, History, Loader2, ArrowUpRight, ArrowDownRight } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { pagoApi } from '../services/api';
